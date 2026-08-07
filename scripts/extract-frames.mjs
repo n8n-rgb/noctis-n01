@@ -65,8 +65,9 @@ try {
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
   const count = pngs.length;
-  // A frame from the far side of the orbit: the car is lit, not silhouetted.
-  const hold = Math.floor((count * 30) / 100);
+  // The held frame for mobile and reduced-motion: pick one where the car reads
+  // clearly and both colours are in play, not one buried in powder.
+  const hold = Math.min(count - 1, Number(process.env.HOLD ?? 56));
   copyFileSync(
     path.join(OUT, `hero_${String(hold + 1).padStart(4, '0')}.webp`),
     'public/media/hero-poster.webp'
