@@ -299,13 +299,13 @@ html[data-loading] body { overflow: hidden; }
 
 .hero__title {
   margin: 0;
-  font-size: clamp(3.6rem, 17.5vw, 19rem);
-  line-height: 0.78;
-  letter-spacing: -0.052em;
+  font-size: clamp(2.9rem, 12.5vw, 13.5rem);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
   white-space: nowrap;
 }
-/* cropped by the viewport edge on purpose */
-.hero__title .line--bleed { margin-left: -0.03em; margin-right: -30vw; }
+/* runs past the right edge on purpose */
+.hero__title .line--bleed { margin-left: -0.03em; margin-right: -20vw; }
 
 
 /* per-line clip-path reveals */
