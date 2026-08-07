@@ -3,6 +3,12 @@ import gsap from 'gsap';
 import { ENTER } from './ease.js';
 import { revealGroup } from './reveal.js';
 import { prefersReducedMotion } from './env.js';
+import { Spring } from './spring.js';
+
+/** Tracking travel on the numerals, in em, from the resting -0.05em. */
+const TRACK_REST = -0.05;
+const TRACK_OPEN = 0.038;
+const LABEL_PUSH = 26; // px the label drifts away from the number
 
 const format = (v, dec) =>
   dec > 0
@@ -57,4 +63,51 @@ export function initSpecs() {
       }
     );
   });
+
+  initSpecHover();
+}
+
+/**
+ * Cursor over a spec row: the numerals open their tracking, the label drifts
+ * away from them, and a bone rule wipes across the row from the left. One
+ * spring per row, same integrator as the cursor and the magnetic button.
+ */
+function initSpecHover() {
+  if (prefersReducedMotion) return;
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+
+  const rows = [...document.querySelectorAll('.spec__item')].map((item) => {
+    const spring = new Spring(0, { stiffness: 140, damping: 17 });
+    item.addEventListener('pointerenter', () => {
+      spring.target = 1;
+    });
+    item.addEventListener('pointerleave', () => {
+      spring.target = 0;
+    });
+    return {
+      item,
+      num: item.querySelector('.spec__num'),
+      label: item.querySelector('.spec__label'),
+      spring,
+    };
+  });
+  if (!rows.length) return;
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = (now - last) / 1000;
+    last = now;
+    rows.forEach(({ item, num, label, spring }) => {
+      const v = Math.max(0, spring.step(dt));
+      item.style.setProperty('--hover', v.toFixed(4));
+      if (num) {
+        num.style.letterSpacing = `${(TRACK_REST + v * TRACK_OPEN).toFixed(4)}em`;
+      }
+      if (label) {
+        label.style.transform = `translate3d(${(v * LABEL_PUSH).toFixed(2)}px, 0, 0)`;
+      }
+    });
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 }
