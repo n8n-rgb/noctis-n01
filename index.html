@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>NOCTIS N/01 — Light Finds It</title>
+<meta name="description" content="NOCTIS N/01. One light. One take. One car." />
+<meta name="theme-color" content="#000000" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wght@300..700&display=swap"
+  rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── grain + vignette ───────────────────────────────────────────── -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ── custom cursor ──────────────────────────────────────────────── -->
+<div class="cursor" aria-hidden="true"><span class="cursor__dot"></span></div>
+
+<!-- ── loader ─────────────────────────────────────────────────────── -->
+<div class="loader" id="loader" data-state="idle">
+  <div class="loader__half loader__half--top">
+    <video class="loader__video" id="loaderVideo" muted playsinline preload="auto" loop></video>
+  </div>
+  <div class="loader__half loader__half--bottom">
+    <video class="loader__video" id="loaderVideoB" muted playsinline preload="auto" loop aria-hidden="true"></video>
+  </div>
+
+  <div class="loader__content">
+    <span class="loader__mark">NOCTIS</span>
+    <div class="loader__bar"><i class="loader__fill" id="loaderFill"></i></div>
+    <span class="loader__count" id="loaderCount">000</span>
+  </div>
+</div>
+
+<!-- ── nav ────────────────────────────────────────────────────────── -->
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#top" data-cursor="link">NOCTIS</a>
+  <nav class="nav__links">
+    <a href="#spec" data-cursor="link"><span>Specification</span></a>
+    <a href="#contact" data-cursor="link"><span>Contact</span></a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ── hero ─────────────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero__stage" id="heroStage">
+      <div class="hero__skew" id="heroSkew">
+        <canvas class="hero__canvas" id="heroCanvas"></canvas>
+        <img class="hero__poster" id="heroPoster" alt="" aria-hidden="true" />
+      </div>
+
+      <div class="hero__ui">
+        <p class="eyebrow reveal" data-reveal>Noctis — N/01</p>
+
+        <h1 class="display hero__title">
+          <span class="line" data-reveal><span class="line__in" data-scramble>Light</span></span>
+          <span class="line line--bleed" data-reveal><span class="line__in" data-scramble>Finds It</span></span>
+        </h1>
+
+        <p class="lede reveal" data-reveal>One light. One take. One car.</p>
+
+        <a class="btn" id="cta" href="mailto:reserve@noctis.auto?subject=N%2F01" data-cursor="invert">
+          <span class="btn__label">Reserve N/01</span>
+        </a>
+      </div>
+
+      <div class="hero__hint" id="heroHint" aria-hidden="true">
+        <span>Scroll to rotate</span>
+        <i class="hero__hintline"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── spec ─────────────────────────────────────────────────────── -->
+  <section class="spec" id="spec">
+    <p class="eyebrow reveal" data-reveal>Specification — N/01</p>
+
+    <ul class="spec__list">
+      <li class="spec__item">
+        <span class="spec__num display" data-reveal data-count="1847" data-dec="0">0</span>
+        <span class="spec__label" data-reveal>Horsepower</span>
+      </li>
+      <li class="spec__item">
+        <span class="spec__num display" data-reveal data-count="1.9" data-dec="1">0.0</span>
+        <span class="spec__label" data-reveal>Seconds to 100 km/h</span>
+      </li>
+      <li class="spec__item">
+        <span class="spec__num display" data-reveal data-count="412" data-dec="0">0</span>
+        <span class="spec__label" data-reveal>km/h terminal</span>
+      </li>
+      <li class="spec__item">
+        <span class="spec__num display" data-reveal data-count="1290" data-dec="0">0</span>
+        <span class="spec__label" data-reveal>Kilograms dry</span>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- ── footer ─────────────────────────────────────────────────────── -->
+<footer class="foot" id="contact">
+  <span class="foot__mark display" data-reveal>NOCTIS</span>
+  <div class="foot__meta">
+    <a href="mailto:reserve@noctis.auto" data-cursor="link"><span>reserve@noctis.auto</span></a>
+    <span>N/01 — Ed. 40</span>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

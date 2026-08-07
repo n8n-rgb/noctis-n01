@@ -1,0 +1,478 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NOCTIS N/01
+   black void · bone · chrome · one electric magenta
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --void:      #000000;
+  --bone:      #F2EFE9;
+  --chrome:    #8E9399;
+  --chrome-dk: #2A2D30;
+  --magenta:   #FF00A0;
+  --cyan:      #00E5FF;
+
+  --ease-in:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.7, 0, 0.84, 0);
+
+  --display: 'Archivo', 'Archivo Expanded', sans-serif;
+  --mono:    'Martian Mono', ui-monospace, monospace;
+
+  --gut: clamp(1.1rem, 3.2vw, 3.25rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--void);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--bone);
+  font-family: var(--mono);
+  font-weight: 400;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lenis owns the scroll; keep native smooth off. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+img, canvas, video { display: block; max-width: 100%; }
+
+::selection { background: var(--magenta); color: var(--void); }
+
+
+/* ── type ─────────────────────────────────────────────────────────── */
+
+.display {
+  font-family: var(--display);
+  font-weight: 900;
+  font-variation-settings: 'wdth' 125, 'wght' 900;
+  font-stretch: 125%;
+  letter-spacing: -0.045em;
+  line-height: 0.8;
+  text-transform: uppercase;
+  /* chromatic split — magenta + cyan ghosts either side of the white */
+  text-shadow:
+     1px 0 1.2px rgba(255, 0, 160, 0.55),
+    -1px 0 1.2px rgba(0, 229, 255, 0.45);
+}
+
+.eyebrow,
+.spec__label,
+.nav a,
+.foot__meta,
+.loader__mark,
+.loader__count,
+.hero__hint,
+.btn {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: clamp(0.56rem, 0.72vw, 0.78rem);
+  font-weight: 400;
+}
+
+.lede {
+  font-family: var(--mono);
+  font-size: clamp(0.72rem, 1.05vw, 0.95rem);
+  line-height: 1.85;
+  letter-spacing: 0.06em;
+  color: var(--bone);
+  max-width: 34ch;
+}
+
+.eyebrow { color: var(--chrome); margin: 0; }
+
+
+/* ── grain + vignette ─────────────────────────────────────────────── */
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  pointer-events: none;
+  background:
+    radial-gradient(125% 90% at 50% 45%, rgba(0,0,0,0) 42%, rgba(0,0,0,0.62) 82%, #000 100%);
+}
+
+
+/* ── cursor ───────────────────────────────────────────────────────── */
+
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 12px; height: 12px;
+  margin: -6px 0 0 -6px;
+  z-index: 120;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  will-change: transform;
+  opacity: 0;
+}
+.cursor__dot {
+  display: block;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--bone);
+}
+@media (hover: none), (pointer: coarse) { .cursor { display: none; } }
+
+
+/* ── loader ───────────────────────────────────────────────────────── */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: var(--void);
+  overflow: hidden;
+}
+.loader[data-state="done"] { pointer-events: none; }
+
+.loader__half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  will-change: transform;
+}
+.loader__half--top    { top: 0;    height: var(--split, 50%); }
+.loader__half--bottom { bottom: 0; height: calc(100% - var(--split, 50%)); }
+
+/* two clipped copies of one clip, meeting exactly on the progress line */
+.loader__video {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100svh;
+  object-fit: cover;
+  filter: contrast(1.14) saturate(1.18);
+}
+.loader__half--top    .loader__video { top: 0; }
+.loader__half--bottom .loader__video { bottom: 0; }
+
+.loader__content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.6rem;
+  text-align: center;
+}
+.loader__mark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-variation-settings: 'wdth' 125, 'wght' 900;
+  font-size: clamp(1.5rem, 5.5vw, 3.4rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 1px 0 1.2px rgba(255,0,160,.55), -1px 0 1.2px rgba(0,229,255,.45);
+}
+.loader__bar {
+  position: relative;
+  width: clamp(150px, 22vw, 300px);
+  height: 1px;
+  background: rgba(242, 239, 233, 0.16);
+}
+.loader__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: var(--magenta);
+  box-shadow: 0 0 10px rgba(255, 0, 160, 0.85);
+}
+.loader__count { color: var(--chrome); font-size: 0.6rem; letter-spacing: 0.3em; }
+
+html[data-loading] { overflow: hidden; }
+html[data-loading] body { overflow: hidden; }
+
+
+/* ── nav ──────────────────────────────────────────────────────────── */
+
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(1.1rem, 2.2vw, 1.9rem) var(--gut);
+  mix-blend-mode: difference;
+}
+.nav__mark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-variation-settings: 'wdth' 125, 'wght' 900;
+  font-size: clamp(0.85rem, 1.35vw, 1.15rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.nav__links { display: flex; gap: clamp(1.1rem, 2.6vw, 2.4rem); }
+
+.nav a { color: var(--bone); text-decoration: none; }
+
+.nav__links a { position: relative; display: inline-block; padding-bottom: 0.35em; }
+
+/* spring-driven underline, wipes in from the left */
+.rule {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+
+/* ── hero ─────────────────────────────────────────────────────────── */
+
+.hero { position: relative; }
+
+.hero__stage {
+  position: relative;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--void);
+}
+
+.hero__skew {
+  position: absolute;
+  inset: -6% -2%;
+  will-change: transform;
+  transform-origin: 50% 50%;
+}
+
+.hero__canvas,
+.hero__poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero__poster { position: absolute; inset: 0; display: none; }
+
+/* the footage is the only colour — let it fall into the page edges */
+.hero__stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 26%),
+    linear-gradient(to top,    rgba(0,0,0,0.86) 0%, rgba(0,0,0,0) 42%),
+    linear-gradient(to right,  rgba(0,0,0,0.7)  0%, rgba(0,0,0,0) 34%);
+}
+
+.hero__ui {
+  position: absolute;
+  z-index: 4;
+  left: var(--gut);
+  right: var(--gut);
+  bottom: clamp(3.2rem, 7vh, 6rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(1rem, 2.2vh, 1.9rem);
+  pointer-events: none;
+}
+.hero__ui > * { pointer-events: auto; }
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(3.6rem, 17.5vw, 19rem);
+  line-height: 0.78;
+  letter-spacing: -0.052em;
+  white-space: nowrap;
+}
+/* cropped by the viewport edge on purpose */
+.hero__title .line--bleed { margin-left: -0.03em; margin-right: -30vw; }
+
+
+/* per-line clip-path reveals */
+.line {
+  display: block;
+  overflow: visible;
+  clip-path: inset(-15% -30% 100% -5%);
+}
+.line__in { display: inline-block; will-change: transform; }
+
+.reveal { clip-path: inset(-15% -30% 100% -5%); }
+
+
+/* ── button ───────────────────────────────────────────────────────── */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.15em 2.4em;
+  color: var(--bone);
+  text-decoration: none;
+  border: 1px solid rgba(242, 239, 233, 0.32);
+  border-radius: 100px;
+  overflow: hidden;
+  will-change: transform;
+  isolation: isolate;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--bone);
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 0.7s var(--ease-in);
+}
+.btn:hover::before, .btn:focus-visible::before { transform: scaleY(1); }
+.btn__label { position: relative; transition: color 0.5s var(--ease-in); will-change: transform; }
+.btn:hover .btn__label, .btn:focus-visible .btn__label { color: var(--void); }
+
+
+/* ── scroll hint ──────────────────────────────────────────────────── */
+
+.hero__hint {
+  position: absolute;
+  z-index: 4;
+  right: var(--gut);
+  bottom: clamp(3.2rem, 7vh, 6rem);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--chrome);
+  font-size: 0.56rem;
+}
+.hero__hintline {
+  display: block;
+  width: clamp(38px, 5vw, 74px);
+  height: 1px;
+  background: currentColor;
+  transform-origin: 100% 50%;
+}
+
+
+/* ── spec ─────────────────────────────────────────────────────────── */
+
+.spec {
+  position: relative;
+  z-index: 2;
+  background: var(--void);
+  padding: clamp(7rem, 22vh, 17rem) var(--gut) clamp(6rem, 16vh, 12rem);
+}
+
+.spec__list {
+  list-style: none;
+  margin: clamp(3rem, 9vh, 7rem) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.4rem, 7vh, 5.5rem);
+}
+
+.spec__item {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 clamp(1rem, 2.5vw, 2.5rem);
+  padding-top: clamp(1rem, 2.4vh, 2rem);
+}
+.spec__item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 1px;
+  background: var(--chrome-dk);
+  transform: scaleX(var(--rule, 1));
+  transform-origin: 0 50%;
+}
+
+.spec__num {
+  font-size: clamp(3.4rem, 15vw, 15rem);
+  line-height: 0.82;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+}
+
+.spec__label { color: var(--chrome); }
+
+
+/* ── footer ───────────────────────────────────────────────────────── */
+
+.foot {
+  position: relative;
+  z-index: 2;
+  background: var(--void);
+  padding: clamp(4rem, 10vh, 8rem) var(--gut) clamp(1.6rem, 4vh, 2.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.2rem, 6vh, 4rem);
+}
+.foot__mark {
+  font-size: clamp(3.2rem, 18.5vw, 20rem);
+  line-height: 0.76;
+  letter-spacing: -0.05em;
+  color: var(--bone);
+  opacity: 0.94;
+}
+.foot__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem clamp(1.2rem, 3vw, 3rem);
+  color: var(--chrome);
+  border-top: 1px solid var(--chrome-dk);
+  padding-top: clamp(1rem, 2.5vh, 1.8rem);
+}
+.foot__meta a {
+  color: var(--chrome);
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.3em;
+}
+
+
+/* ── narrow ───────────────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .hero__title { white-space: normal; font-size: clamp(3.4rem, 21vw, 8rem); }
+  .hero__title .line--bleed { margin-right: -18vw; }
+  .hero__hint { display: none; }
+  .lede { max-width: 26ch; }
+}
+
+
+/* ── reduced motion ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { display: none; }
+  .line, .reveal { clip-path: none !important; }
+  .line__in { transform: none !important; }
+  .hero__hint { display: none; }
+  .loader { display: none; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

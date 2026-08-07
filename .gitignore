@@ -1,0 +1,9 @@
+node_modules
+dist
+.vercel
+.DS_Store
+*.log
+
+# working footage — the extracted WebP sequence and posters are committed,
+# the raw renders are not
+media-src/
