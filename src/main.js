@@ -9,6 +9,7 @@ import { initCursor } from './modules/cursor.js';
 import { initMagnetic } from './modules/magnetic.js';
 import { initNav } from './modules/nav.js';
 import { initSpecs } from './modules/specs.js';
+import { initParts } from './modules/parts.js';
 import {
   prepareReveals, revealGroup, revealOnScroll, driveWidthAxis,
 } from './modules/reveal.js';
@@ -23,6 +24,7 @@ const heroReveals = prepareReveals(document.getElementById('hero'));
 const specReveals = prepareReveals(document.querySelector('.spec')).filter(
   (n) => !n.classList.contains('spec__num') && !n.classList.contains('spec__label')
 );
+const partReveals = prepareReveals(document.querySelector('.parts'));
 const footReveals = prepareReveals(document.querySelector('.foot'));
 
 document.getElementById('heroPoster')?.setAttribute('src', POSTER_SRC);
@@ -32,7 +34,8 @@ function bootInteractions() {
   initNav();
   initMagnetic(document.getElementById('cta'));
   initSpecs();
-  revealOnScroll([...specReveals, ...footReveals]);
+  initParts();
+  revealOnScroll([...partReveals, ...specReveals, ...footReveals]);
 }
 
 function enterHero() {
